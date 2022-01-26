@@ -1,2 +1,5 @@
 (defpackage #:pad
-  (:use #:cl))
+  (:use #:cl)
+  (:local-nicknames (:hun :hunchentoot)
+		    (:rou :easy-routes)
+		    (:jso :jsown)))

@@ -5,6 +5,8 @@
   :version "0.0.1"
   :serial t
   :components ((:file "package")
-               (:file "pad"))
+	       (:file "database")
+               (:file "main"))
   :depends-on (:hunchentoot
-	       :easy-routes))
+	       :easy-routes
+	       :jsown))

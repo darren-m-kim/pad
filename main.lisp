@@ -5,16 +5,6 @@
 (defun hello ()
   (print db-spec))
 
-;; (ql:quickload 'hunchentoot)
-;; (ql:quickload 'easy-routes)
-
-(easy-routes:defroute foo ("/foo/:x" :method :get) (y &get z)
-  (format nil "x: ~a y: ~a z: ~a" x y z))
-
-(easy-routes:defroute get-client ("/client/:x" :method :get) (y &get z)
-  (format nil "x: ~a y: ~a z: ~a" x y z))
-
-
 (defun @prn (next)
   (print "HI DARREN")
   (funcall next))
@@ -29,18 +19,40 @@
   (setf (hunchentoot:content-type*) "application/json")
   (funcall next))
 
-(easy-routes:defroute post-client!
+(rou:defroute foo
+    ("/foo/:x" :method :get) (y &get z)
+  (format nil "x: ~a y: ~a z: ~a" x y z))
+
+(rou:defroute get-client
+    ("/client" :method :get
+	       :decorators (@json)) ()
+  (format nil
+	  (jso:to-json
+	   '(:obj ('bingo . 24.93)
+	     ("bang" 1 2 3 "foo" 4 5)
+	     ("foo" . "bar")))))
+
+(rou:defroute post-client!
     ("/client/:x/:y/:z" :method :post
 			:decorators (@prn @head)) ()
   (format nil "POST! ~a y: ~a z: ~a" x y z))
 
-(easy-routes:defroute put-client!
+(rou:defroute put-client!
     ("/client/:x/:y" :method :put
 		     :decorators (@prn @json @head)) ()
   (format nil "{\"apple\": \"carrot\", \"love\": \"~a\", \"hate\": \"~a\"}" x y))
 
+(defvar *server*
+  (make-instance
+   'rou:easy-routes-acceptor
+   :port 1234))
 
+(defun start ()
+  (hun:start *server*))
 
-(defvar *server* (make-instance 'easy-routes:easy-routes-acceptor :port 1234))
+(defun stop ()
+  (hun:stop *server*))
 
-(hunchentoot:start *server*)
+(defun refresh ()
+  (progn (stop)
+	 (start)))
