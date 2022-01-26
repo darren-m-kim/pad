@@ -5,4 +5,6 @@
   :version "0.0.1"
   :serial t
   :components ((:file "package")
-               (:file "pad")))
+               (:file "pad"))
+  :depends-on (:hunchentoot
+	       :easy-routes))
